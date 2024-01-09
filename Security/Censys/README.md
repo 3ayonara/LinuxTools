@@ -16,9 +16,14 @@ yourdomain.com {
         r "^(?=.*censys)" 444
     }
 }
-
 ```
 
+### iptables
+```
+iptables -A INPUT -m string --algo bm --string "AS398722" -j DROP
+iptables -A INPUT -m string --algo bm --string "AS398705" -j DROP
+iptables -A INPUT -m string --algo bm --string "AS398324" -j DROP
+```
 ## Consultation :
 
 > Latest Official Documentation : https://support.censys.io/hc/en-us/articles/360043177092-from-faq
