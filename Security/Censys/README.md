@@ -3,10 +3,23 @@
 ### Nginx
 Blocking UA for Censys
 ```nginx
-        if ($http_user_agent ~* "^(?=.*censys)") {
-            return 444;
-        }
+if ($http_user_agent ~* "^(?=.*censys)") {
+    return 444;
+}
 ```
+
+### Caddy
+```nginx
+yourdomain.com {
+    ...
+    rewrite {
+        r "^(?=.*censys)" 444
+    }
+}
+
+```
+
+## Consultation :
 
 > Latest Official Documentation : https://support.censys.io/hc/en-us/articles/360043177092-from-faq
 
