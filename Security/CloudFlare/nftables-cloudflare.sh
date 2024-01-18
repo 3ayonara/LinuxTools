@@ -32,3 +32,9 @@ table inet filter {
     }
 }
 EOF
+
+if [ -f "/etc/nftables.conf" ]; then
+    nft -f /etc/nftables.conf
+fi
+
+exit 0
