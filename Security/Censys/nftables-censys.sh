@@ -38,4 +38,7 @@ if [ -f "/etc/nftables.conf" ]; then
     nft -f /etc/nftables.conf
 fi
 
+systemctl enable nftables.service
+systemctl restart nftables.service
+
 exit 0
