@@ -9,8 +9,8 @@ curl -s https://www.cloudflare.com/ips-v6 | tee /etc/nftables/cloudflare-ips-v6.
 
 cp /etc/nftables.conf /etc/nftables.conf.bak
 
-cloudflare_ipv4=$(cat /etc/nftables/cloudflare-ips-v4.txt | tr -s '\n' ' ')
-cloudflare_ipv6=$(cat /etc/nftables/cloudflare-ips-v6.txt | tr -s '\n' ' ')
+cloudflare_ipv4=$(cat /etc/nftables/cloudflare-ips-v4.txt | tr -s '\n' ',')
+cloudflare_ipv6=$(cat /etc/nftables/cloudflare-ips-v6.txt | tr -s '\n' ',')
 
 cat <<EOF >/etc/nftables.conf
 table inet filter {
