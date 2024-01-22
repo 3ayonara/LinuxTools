@@ -49,8 +49,14 @@ table inet filter {
         ip6 saddr @censys-ipv6 drop
         tcp dport 22 accept
         ct state related,established accept
-        icmp type echo-request drop
         counter reject
+    }
+
+    # 添加 IPv6 允许出站流量规则
+    chain output {
+        type filter hook output priority 0;
+        ip6 daddr fe80::/10 accept
+        ip6 daddr ::/0 accept
     }
 }
 EOF

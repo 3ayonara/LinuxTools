@@ -33,6 +33,13 @@ table inet filter {
         ct state related,established accept
         counter reject
     }
+    
+    # 添加 IPv6 允许出站流量规则
+    chain output {
+        type filter hook output priority 0;
+        ip6 daddr fe80::/10 accept
+        ip6 daddr ::/0 accept
+    }
 }
 EOF
 
