@@ -12,28 +12,33 @@ grep -E '^[0-9a-fA-F:]+(/[0-9]+)?$' /etc/nftables/censys-ips.txt >/etc/nftables/
 
 cp /etc/nftables.conf /etc/nftables.conf.bak
 
+censys_ipv4=$(cat /etc/nftables/censys-ips-v4.txt | tr -s '\n' ' ')
+censys_ipv6=$(cat /etc/nftables/censys-ips-v6.txt | tr -s '\n' ' ')
+cloudflare_ipv4=$(cat /etc/nftables/cloudflare-ips-v4.txt | tr -s '\n' ' ')
+cloudflare_ipv6=$(cat /etc/nftables/cloudflare-ips-v6.txt | tr -s '\n' ' ')
+
 cat <<EOF >/etc/nftables.conf
 table inet filter {
      set cloudflare-ipv4 {
           type ipv4_addr
           flags interval
-          elements = { file "/etc/nftables/cloudflare-ips-v4.txt" }
+          elements = { $cloudflare_ipv4 }
      }
      set cloudflare-ipv6 {
           type ipv6_addr
           flags interval
-          elements = { file "/etc/nftables/cloudflare-ips-v6.txt" }
+          elements = { $cloudflare_ipv6 }
      }
      
      set censys-ipv4 {
           type ipv4_addr
           flags interval
-          elements = { file "/etc/nftables/censys-ips-v4.txt" }
+          elements = { $censys_ipv4 }
      }
      set censys-ipv6 {
           type ipv6_addr
           flags interval
-          elements = { file "/etc/nftables/censys-ips-v6.txt" }
+          elements = { $censys_ipv6 }
      }
 
     chain input {
