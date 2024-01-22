@@ -1,18 +1,18 @@
 #!/bin/bash
 
 if [ ! -d "/etc/nftables" ]; then
-    mkdir /etc/nftables
+     mkdir /etc/nftables
 fi
 
 curl -s https://www.cloudflare.com/ips-v4 | tee /etc/nftables/cloudflare-ips-v4.txt
 curl -s https://www.cloudflare.com/ips-v6 | tee /etc/nftables/cloudflare-ips-v6.txt
 curl -o /etc/nftables/censys-ips.txt https://support.censys.io/hc/en-us/article_attachments/20618695168532
-grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(/[0-9]+)?$' /etc/nftables/censys-ips.txt > /etc/nftables/censys-ips-v4.txt
-grep -E '^[0-9a-fA-F:]+(/[0-9]+)?$' /etc/nftables/censys-ips.txt > /etc/nftables/censys-ips-v6.txt
+grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(/[0-9]+)?$' /etc/nftables/censys-ips.txt >/etc/nftables/censys-ips-v4.txt
+grep -E '^[0-9a-fA-F:]+(/[0-9]+)?$' /etc/nftables/censys-ips.txt >/etc/nftables/censys-ips-v6.txt
 
 cp /etc/nftables.conf /etc/nftables.conf.bak
 
-cat <<EOF > /etc/nftables.conf
+cat <<EOF >/etc/nftables.conf
 table inet filter {
      set cloudflare-ipv4 {
           type ipv4_addr
@@ -51,7 +51,7 @@ table inet filter {
 EOF
 
 if [ -f "/etc/nftables.conf" ]; then
-    nft -f /etc/nftables.conf
+     nft -f /etc/nftables.conf
 fi
 
 systemctl enable nftables.service
