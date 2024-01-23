@@ -41,23 +41,24 @@ table inet filter {
           elements = { $censys_ipv6 }
      }
 
-    chain input {
-        type filter hook input priority 0;
-        ip saddr @cloudflare-ipv4 tcp dport { 80,443 } accept
-        ip6 saddr @cloudflare-ipv6 tcp dport { 80,443 } accept
-        ip saddr @censys-ipv4 drop
-        ip6 saddr @censys-ipv6 drop
-        tcp dport 22 accept
-        ct state related,established accept
-        counter reject
+     chain input {
+          type filter hook input priority 0;
+          ip saddr @cloudflare-ipv4 tcp dport { 80,443 } accept
+          ip6 saddr @cloudflare-ipv6 tcp dport { 80,443 } accept
+          ip saddr @censys-ipv4 drop
+          ip6 saddr @censys-ipv6 drop
+          tcp dport 22 accept
+          ct state related,established accept
+          counter reject
     }
 
-    # 添加 IPv6 允许出站流量规则
-    chain output {
-        type filter hook output priority 0;
-        ip6 daddr fe80::/10 accept
-        ip6 daddr ::/0 accept
-    }
+     chain forward {
+          type filter hook forward priority filter;
+     }
+
+     chain output {
+          type filter hook output priority filter;
+     }
 }
 EOF
 
