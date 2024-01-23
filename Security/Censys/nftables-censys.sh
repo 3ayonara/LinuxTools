@@ -14,6 +14,10 @@ censys_ipv4=$(cat /etc/nftables/censys-ips-v4.txt | tr -s '\n' ',')
 censys_ipv6=$(cat /etc/nftables/censys-ips-v6.txt | tr -s '\n' ',')
 
 cat <<EOF >/etc/nftables.conf
+#!/usr/sbin/nft -f
+
+flush ruleset
+
 table inet filter {
      set censys-ipv4 {
           type ipv4_addr
@@ -27,20 +31,26 @@ table inet filter {
      }
 
     chain input {
-        type filter hook input priority 0;
-        ip saddr @censys-ipv4 drop
-        ip6 saddr @censys-ipv6 drop
-        tcp dport 22 accept
-        ct state related,established accept
-        counter reject
+          type filter hook input priority 0;
+          ip saddr @censys-ipv4 drop
+          ip6 saddr @censys-ipv6 drop
+          tcp dport 22 accept
+          iifname lo accept
+
+          icmp type echo-request counter drop
+          icmpv6 type echo-request drop
+          icmpv6 type { nd-neighbor-solicit,nd-neighbor-advert,nd-router-solicit,nd-router-advert } accept
+
+          ct state related,established accept
+          counter reject
     }
 
     chain forward {
-        type filter hook forward priority filter;
+          type filter hook forward priority filter;
     }
 
     chain output {
-        type filter hook output priority filter;
+          type filter hook output priority filter;
     }
 }
 EOF

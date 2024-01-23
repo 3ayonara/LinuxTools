@@ -18,6 +18,10 @@ cloudflare_ipv4=$(cat /etc/nftables/cloudflare-ips-v4.txt | tr -s '\n' ',')
 cloudflare_ipv6=$(cat /etc/nftables/cloudflare-ips-v6.txt | tr -s '\n' ',')
 
 cat <<EOF >/etc/nftables.conf
+#!/usr/sbin/nft -f
+
+flush ruleset
+
 table inet filter {
      set cloudflare-ipv4 {
           type ipv4_addr
@@ -48,6 +52,12 @@ table inet filter {
           ip saddr @censys-ipv4 drop
           ip6 saddr @censys-ipv6 drop
           tcp dport 22 accept
+          iifname lo accept
+
+          icmp type echo-request counter drop
+          icmpv6 type echo-request drop
+          icmpv6 type { nd-neighbor-solicit,nd-neighbor-advert,nd-router-solicit,nd-router-advert } accept
+
           ct state related,established accept
           counter reject
     }
